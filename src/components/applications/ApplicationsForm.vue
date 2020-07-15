@@ -2,19 +2,19 @@
   <div class="apps-form">
     <v-stepper v-model="deployStep">
       <v-stepper-header>
-        <v-stepper-step step="1">
+        <v-stepper-step step="1" :complete="deployStep > 1">
           Basics
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="2">
+        <v-stepper-step step="2" :complete="deployStep > 2">
           Ports
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="3">
+        <v-stepper-step step="3" :complete="deployStep > 3">
           Volumes
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="4">
+        <v-stepper-step step="4" :complete="deployStep > 4">
           Environment
         </v-stepper-step>
       </v-stepper-header>
@@ -38,7 +38,7 @@
               v-model="form['restart_policy']"
             ></v-select>
           </form>
-          <v-btn color="primary" @click="nextStep(1)">
+          <v-btn color="primary" @click="deployStep += 1">
             Continue
           </v-btn>
         </v-stepper-content>
@@ -51,8 +51,8 @@
                   type="number"
                   label="Container"
                   placeholder="80"
-                  min=0
-                  max=65535
+                  min="0"
+                  max="65535"
                   v-model="item['cport']"
                 ></v-text-field>
               </v-col>
@@ -61,8 +61,8 @@
                   type="number"
                   label="Host"
                   placeholder="80"
-                  min=0
-                  max=65535
+                  min="0"
+                  max="65535"
                   v-model="item['hport']"
                 ></v-text-field>
               </v-col>
@@ -91,7 +91,10 @@
               </v-col>
             </v-row>
           </form>
-          <v-btn color="primary" @click="nextStep(2)">
+          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+            Back
+          </v-btn>
+          <v-btn color="primary" @click="deployStep += 1">
             Continue
           </v-btn>
         </v-stepper-content>
@@ -131,7 +134,10 @@
               </v-col>
             </v-row>
           </form>
-          <v-btn color="primary" @click="nextStep(3)">
+          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+            Back
+          </v-btn>
+          <v-btn color="primary" @click="deployStep += 1">
             Continue
           </v-btn>
         </v-stepper-content>
@@ -165,11 +171,13 @@
               </v-col>
             </v-row>
           </form>
+          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+            Back
+          </v-btn>
           <v-btn color="primary" @click="nextStep(4)">
-            Continue
+            Submit
           </v-btn>
         </v-stepper-content>
-
       </v-stepper-items>
     </v-stepper>
   </div>
@@ -245,11 +253,31 @@ export default {
       axios.post(url, payload).then(response => {
         console.log(response);
       });
+    },
+    async readApp() {
+      const appId = this.$route.params.appId;
+      const url = `/api/apps/${appId}`;
+      const response = await axios.get(url);
+      if (!response.data.data) {
+        return undefined;
+      }
+      return response.data.data;
+    },
+    async populateForm() {
+      const app = await this.readApp();
+      if (!app) return;
+      this.form = {
+        title: app.title,
+        image: app.image,
+        restart_policy: app.restart_policy,
+        ports: app.ports,
+        volumes: app.volumes,
+        env: app.env
+      };
     }
   },
-  created() {
-    // const appId = this.$router.params.appId;
-    // this.readApp(appId);
+  async created() {
+    await this.populateForm();
   }
 };
 </script>

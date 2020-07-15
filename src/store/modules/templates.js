@@ -21,7 +21,9 @@ const mutations = {
   },
   removeTemplate(state, template) {
     const idx = state.templates.findIndex(x => x.id === template.id);
-    if (idx < 0) { return; }
+    if (idx < 0) {
+      return;
+    }
     state.templates.splice(idx, 1);
   }
 };
@@ -29,48 +31,38 @@ const mutations = {
 const actions = {
   readTemplates({ commit }) {
     const url = "/api/templates/";
-    axios
-      .get(url)
-      .then(response => {
-        const templates = response.data.data;
-        commit("setTemplates", templates);
-      });
+    axios.get(url).then(response => {
+      const templates = response.data.data;
+      commit("setTemplates", templates);
+    });
   },
   readTemplate({ commit }, id) {
     const url = `/api/templates/${id}`;
-    axios
-      .get(url)
-      .then(response => {
-        const template = response.data.data;
-        commit("setTemplate", template);
-      });
+    axios.get(url).then(response => {
+      const template = response.data.data;
+      commit("setTemplate", template);
+    });
   },
   writeTemplate({ commit }, payload) {
     const url = "/api/templates/";
-    axios
-      .post(url, payload)
-      .then(response => {
-        const template = response.data.data;
-        commit("addTemplate", template);
-      });
+    axios.post(url, payload).then(response => {
+      const template = response.data.data;
+      commit("addTemplate", template);
+    });
   },
   updateTemplate({ commit }, id) {
     const url = `/api/templates/${id}/refresh`;
-    axios
-      .post(url)
-      .then(response => {
-        const template = response.data.data;
-        commit("setTemplate", template);
-      })
+    axios.post(url).then(response => {
+      const template = response.data.data;
+      commit("setTemplate", template);
+    });
   },
   deleteTemplate({ commit }, id) {
     const url = `/api/templates/${id}`;
-    axios
-      .delete(url)
-      .then(response => {
-        const template = response.data.data;
-        commit("removeTemplate", template);
-      })
+    axios.delete(url).then(response => {
+      const template = response.data.data;
+      commit("removeTemplate", template);
+    });
   }
 };
 

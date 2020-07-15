@@ -22,18 +22,9 @@
         <template v-slot:item.title="{ item }">
           <div class="namecell">
             <span class="nametext">{{ item.title }}</span>
-            <v-menu
-              close-on-click
-              close-on-content-click
-              offset-y
-            >
+            <v-menu close-on-click close-on-content-click offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  size="small"
-                  v-bind="attrs"
-                  v-on="on"
-                >
+                <v-btn icon size="small" v-bind="attrs" v-on="on">
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
@@ -51,7 +42,12 @@
                   <v-list-item-title>Update</v-list-item-title>
                 </v-list-item>
                 <v-divider />
-                <v-list-item @click="selectedTemplate=item;deleteDialog=true;">
+                <v-list-item
+                  @click="
+                    selectedTemplate = item;
+                    deleteDialog = true;
+                  "
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
                   </v-list-item-icon>
@@ -70,11 +66,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog
-      v-if="selectedTemplate"
-      v-model="deleteDialog"
-      max-width="290"
-    >
+    <v-dialog v-if="selectedTemplate" v-model="deleteDialog" max-width="290">
       <v-card>
         <v-card-title class="headline" style="word-break: break-all;">
           Delete the template?
@@ -85,15 +77,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="deleteDialog=false"
-          >
+          <v-btn text @click="deleteDialog = false">
             Disagree
           </v-btn>
           <v-btn
             text
-            @click="deleteTemplate(selectedTemplate.id);deleteDialog=false"
+            @click="
+              deleteTemplate(selectedTemplate.id);
+              deleteDialog = false;
+            "
           >
             Agree
           </v-btn>
@@ -111,7 +103,7 @@ export default {
     return {
       selectedTemplate: null,
       deleteDialog: false,
-      search:"",
+      search: "",
       headers: [
         {
           text: "Title",
@@ -138,7 +130,7 @@ export default {
     ...mapActions({
       deleteTemplate: "templates/deleteTemplate",
       readTemplates: "templates/readTemplates",
-      updateTemplate: "templates/updateTemplate",
+      updateTemplate: "templates/updateTemplate"
     }),
     handleRowClick(value) {
       console.log(value);
@@ -153,7 +145,7 @@ export default {
   mounted() {
     this.readTemplates();
   }
-}
+};
 </script>
 
 <style lang="css" scoped>

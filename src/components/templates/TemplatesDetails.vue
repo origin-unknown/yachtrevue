@@ -12,7 +12,7 @@
 
       <v-row dense class="mt-3">
         <v-col
-          v-for="item in template.items"
+          v-for="item in sortByTitle(template.items)"
           :key="item.id"
           cols="12"
           xl="2"
@@ -72,7 +72,13 @@ export default {
   methods: {
     ...mapActions({
       readTemplate: "templates/readTemplate"
-    })
+    }),
+    sortByTitle(arr) {
+      // Set slice() to avoid to generate an infinite loop!
+      return arr.slice().sort(function(a, b) {
+        return a.title.localeCompare(b.title);
+      });
+    }
   },
   created() {
     const templateId = this.$route.params.templateId;

@@ -1,15 +1,7 @@
 <template>
   <v-app id="yachtrevue">
-    <v-navigation-drawer
-      app
-      clipped
-      permanent
-      mini-variant
-      expand-on-hover>
-      <!-- -->
-
+    <v-navigation-drawer app clipped permanent mini-variant expand-on-hover>
       <v-list nav dense>
-
         <v-list-item to="/">
           <v-list-item-icon>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -19,10 +11,7 @@
 
         <v-divider />
 
-        <v-list-group
-          prepend-icon="mdi-folder"
-          :value="false">
-
+        <v-list-group prepend-icon="mdi-folder" :value="false">
           <template v-slot:activator>
             <v-list-item-title>My Templates</v-list-item-title>
           </template>
@@ -40,13 +29,9 @@
             </v-list-item-icon>
             <v-list-item-title>New Template</v-list-item-title>
           </v-list-item>
-
         </v-list-group>
 
-        <v-list-group
-          prepend-icon="mdi-application"
-          :value="false">
-
+        <v-list-group prepend-icon="mdi-application" :value="false">
           <template v-slot:activator>
             <v-list-item-title>My Applications</v-list-item-title>
           </template>
@@ -64,14 +49,9 @@
             </v-list-item-icon>
             <v-list-item-title>New Application</v-list-item-title>
           </v-list-item>
-
         </v-list-group>
 
-
-        <v-list-group
-          prepend-icon="mdi-package"
-          :value="false">
-
+        <v-list-group prepend-icon="mdi-package" :value="false">
           <template v-slot:activator>
             <v-list-item-title>My Container</v-list-item-title>
           </template>
@@ -89,46 +69,30 @@
             </v-list-item-icon>
             <v-list-item-title>New Container</v-list-item-title>
           </v-list-item>
-
         </v-list-group>
-
       </v-list>
-
     </v-navigation-drawer>
 
-    <v-app-bar
-      app
-      clipped-left>
-
+    <v-app-bar app clipped-left>
       <v-toolbar-title>Yacht Revue</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
-
         <!-- If using vue-router -->
         <router-view></router-view>
       </v-container>
     </v-main>
-
-  <!--
-    <v-footer app>
-       <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
-  -->
   </v-app>
-
 </template>
 
 <script>
 export default {
   name: "App",
-
-  components: {
-  },
-
-  data: () => ({
-  })
+  components: {},
+  data() {
+    return {};
+  }
 };
 </script>
