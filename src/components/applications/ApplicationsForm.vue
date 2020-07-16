@@ -21,162 +21,275 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <form>
-            <v-text-field
-              label="Title"
-              placeholder="My Container"
-              v-model="form.title"
-            ></v-text-field>
-            <v-text-field
-              label="Image"
-              placeholder="image:my-image"
-              v-model="form.image"
-            ></v-text-field>
-            <v-select
-              :items="['always', 'on-failure', 'unless-stopped']"
-              label="Restart Policy"
-              v-model="form['restart_policy']"
-            ></v-select>
-          </form>
-          <v-btn color="primary" @click="deployStep += 1">
-            Continue
-          </v-btn>
+          <ValidationObserver ref="obs1" v-slot="{ invalid }">
+            <form>
+              <ValidationProvider
+                name="Title"
+                rules="required"
+                v-slot="{ errors, valid }"
+              >
+                <v-text-field
+                  label="Title"
+                  placeholder="My Container"
+                  v-model="form.title"
+                  :error-messages="errors"
+                  :success="valid"
+                  required
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider
+                name="Image"
+                rules="required"
+                v-slot="{ errors, valid }"
+              >
+                <v-text-field
+                  label="Image"
+                  placeholder="image:my-image"
+                  v-model="form.image"
+                  :error-messages="errors"
+                  :success="valid"
+                  required
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider
+                name="Restart Policy"
+                rules="required"
+                v-slot="{ errors, valid }"
+              >
+                <v-select
+                  :items="['always', 'on-failure', 'unless-stopped']"
+                  label="Restart Policy"
+                  v-model="form['restart_policy']"
+                  :error-messages="errors"
+                  :success="valid"
+                  required
+                ></v-select>
+              </ValidationProvider>
+            </form>
+            <v-btn
+              color="primary"
+              @click="deployStep += 1"
+              :disabled="invalid"
+            >
+              Continue
+            </v-btn>
+          </ValidationObserver>
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <form>
-            <v-row v-for="(item, index) in form.ports" :key="index">
-              <v-col>
-                <v-text-field
-                  type="number"
-                  label="Container"
-                  placeholder="80"
-                  min="0"
-                  max="65535"
-                  v-model="item['cport']"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  type="number"
-                  label="Host"
-                  placeholder="80"
-                  min="0"
-                  max="65535"
-                  v-model="item['hport']"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-select
-                  :items="['tcp', 'udp']"
-                  label="Protocol"
-                  v-model="item['proto']"
-                ></v-select>
-              </v-col>
-              <v-col class="d-flex justify-end" cols="1">
-                <v-btn
-                  icon
-                  class="align-self-center"
-                  @click="removePort(index)"
-                >
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" class="d-flex justify-end">
-                <v-btn icon class="align-self-center" @click="addPort">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </form>
-          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-            Back
-          </v-btn>
-          <v-btn color="primary" @click="deployStep += 1">
-            Continue
-          </v-btn>
+          <ValidationObserver ref="obs2" v-slot="{ invalid }">
+            <form>
+              <v-row v-for="(item, index) in form.ports" :key="index">
+                <v-col>
+                  <ValidationProvider
+                    name="Container"
+                    rules=""
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      type="number"
+                      label="Container"
+                      placeholder="80"
+                      min="0"
+                      max="65535"
+                      v-model="item['cport']"
+                      :error-messages="errors"
+                      :success="valid"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    name="Host"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      type="number"
+                      label="Host"
+                      placeholder="80"
+                      min="0"
+                      max="65535"
+                      v-model="item['hport']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    name="Protocol"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-select
+                      :items="['tcp', 'udp']"
+                      label="Protocol"
+                      v-model="item['proto']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-select>
+                  </ValidationProvider>
+                </v-col>
+                <v-col class="d-flex justify-end" cols="1">
+                  <v-btn
+                    icon
+                    class="align-self-center"
+                    @click="removePort(index)"
+                  >
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addPort">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+              Back
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="deployStep += 1"
+              :disabled="invalid"
+            >
+              Continue
+            </v-btn>
+          </ValidationObserver>
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <form>
-            <v-row v-for="(item, index) in form.volumes" :key="index">
-              <v-col>
-                <v-text-field
-                  label="Container"
-                  placeholder="/share"
-                  v-model="item['host']"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  label="Host"
-                  placeholder="/yacht/image/share"
-                  v-model="item['bind']"
-                ></v-text-field>
-              </v-col>
-              <v-col class="d-flex justify-end" cols="1">
-                <v-btn
-                  icon
-                  class="align-self-center"
-                  @click="removeVolume(index)"
-                >
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" class="d-flex justify-end">
-                <v-btn icon class="align-self-center" @click="addVolume">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </form>
-          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-            Back
-          </v-btn>
-          <v-btn color="primary" @click="deployStep += 1">
-            Continue
-          </v-btn>
+          <ValidationObserver ref="obs3" v-slot="{ invalid }">
+            <form>
+              <v-row v-for="(item, index) in form.volumes" :key="index">
+                <v-col>
+                  <ValidationProvider
+                    name="Container"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Container"
+                      placeholder="/share"
+                      v-model="item['container']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    name="Host"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Host"
+                      placeholder="/yacht/image/share"
+                      v-model="item['bind']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col class="d-flex justify-end" cols="1">
+                  <v-btn
+                    icon
+                    class="align-self-center"
+                    @click="removeVolume(index)"
+                  >
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addVolume">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+              Back
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="deployStep += 1"
+              :disabled="invalid"
+            >
+              Continue
+            </v-btn>
+          </ValidationObserver>
         </v-stepper-content>
 
         <v-stepper-content step="4">
-          <form>
-            <v-row v-for="(item, index) in form.env" :key="index">
-              <v-col>
-                <v-text-field
-                  label="Label"
-                  v-model="item['label']"
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  label="Host"
-                  v-model="item['default']"
-                ></v-text-field>
-              </v-col>
-              <v-col class="d-flex justify-end" cols="1">
-                <v-btn icon class="align-self-center" @click="removeEnv(index)">
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" class="d-flex justify-end">
-                <v-btn icon class="align-self-center" @click="addEnv">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </form>
-          <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-            Back
-          </v-btn>
-          <v-btn color="primary" @click="nextStep(4)">
-            Submit
-          </v-btn>
+          <ValidationObserver ref="obs4" v-slot="{ invalid }">
+            <form>
+              <v-row v-for="(item, index) in form.env" :key="index">
+                <v-col>
+                  <ValidationProvider
+                    name="Label"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Label"
+                      v-model="item['label']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    name="Host"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Host"
+                      v-model="item['default']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col class="d-flex justify-end" cols="1">
+                  <v-btn icon class="align-self-center" @click="removeEnv(index)">
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addEnv">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+              Back
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="nextStep(4)"
+              :disabled="invalid"
+            >
+              Submit
+            </v-btn>
+          </ValidationObserver>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -185,8 +298,13 @@
 
 <script>
 import axios from "axios";
+import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  },
   data() {
     return {
       deployStep: 1,
@@ -212,7 +330,8 @@ export default {
         env: [
           {
             label: "JAVA_OPTS",
-            default: "-IDK WHAT THE HELL"
+            default: "-IDK WHAT THE HELL",
+            name: "" // unused, fixes error
           }
         ]
       }
@@ -239,7 +358,7 @@ export default {
     },
     nextStep(n) {
       if (n === this.deploySteps) {
-        this.deployStep = 1;
+        // this.deployStep = 1;
         this.submitFormData();
       } else {
         this.deployStep = n + 1;
@@ -252,6 +371,7 @@ export default {
       const url = `/api/apps/${appId}/deploy`;
       axios.post(url, payload).then(response => {
         console.log(response);
+        this.deployStep = 1;
       });
     },
     async readApp() {
