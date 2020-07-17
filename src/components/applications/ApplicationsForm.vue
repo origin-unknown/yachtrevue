@@ -387,12 +387,12 @@ export default {
       const app = await this.readApp();
       if (!app) return;
       this.form = {
-        title: app.title,
-        image: app.image,
-        restart_policy: app.restart_policy,
-        ports: app.ports,
-        volumes: app.volumes,
-        env: app.env
+        title: app.title || "",
+        image: app.image || "",
+        restart_policy: app.restart_policy || "",
+        ports: app.ports || [],
+        volumes: app.volumes || [],
+        env: app.env || []
       };
     }
   },
