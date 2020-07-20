@@ -17,6 +17,14 @@
         <v-stepper-step step="4" :complete="deployStep > 4">
           Environment
         </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step step="5" :complete="deployStep > 5">
+          System Controls
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step step="6" :complete="deployStep > 6">
+          Caps
+        </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
@@ -284,13 +292,121 @@
             </v-btn>
             <v-btn
               color="primary"
-              @click="nextStep(4)"
+              @click="deployStep += 1"
+              :disabled="invalid"
+            >
+              Continue
+            </v-btn>
+          </ValidationObserver>
+        </v-stepper-content>
+
+        <v-stepper-content step="5">
+          <ValidationObserver ref="obs5" v-slot="{ invalid }">
+            <form>
+              <v-row v-for="(item, index) in form.sysctls" :key="index">
+                <v-col>
+                  <ValidationProvider
+                    name="Name"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Name"
+                      v-model="item['name']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    name="Value"
+                    rules="required"
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Value"
+                      v-model="item['value']"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col class="d-flex justify-end" cols="1">
+                  <v-btn icon class="align-self-center" @click="removeSysctl(index)">
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addSysctl">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+              Back
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="deployStep += 1"
               :disabled="invalid"
             >
               Submit
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
+
+        <v-stepper-content step="6">
+          <ValidationObserver ref="obs6" v-slot="{ invalid }">
+            <form>
+              <v-row v-for="(item, index) in form.cap_add" :key="index">
+                <v-col>
+                  <ValidationProvider
+                    name="Value"
+                    rules=""
+                    v-slot="{ errors, valid }"
+                  >
+                    <v-text-field
+                      label="Value"
+                      v-model="form.cap_add[index]"
+                      :error-messages="errors"
+                      :success="valid"
+                      required
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col class="d-flex justify-end" cols="1">
+                  <v-btn icon class="align-self-center" @click="removeCap_add(index)">
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addCap_add">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
+              Back
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="nextStep(6)"
+              :disabled="invalid"
+            >
+              Submit
+            </v-btn>
+          </ValidationObserver>
+        </v-stepper-content>
+
       </v-stepper-items>
     </v-stepper>
   </div>
@@ -308,7 +424,7 @@ export default {
   data() {
     return {
       deployStep: 1,
-      deploySteps: 4,
+      deploySteps: 6,
 
       form: {
         title: "My Container",
@@ -333,7 +449,14 @@ export default {
             default: "-IDK WHAT THE HELL",
             name: "" // unused, fixes error
           }
-        ]
+        ],
+        sysctls: [
+          {
+            name: "name",
+            value: "value"
+          }
+        ],
+        cap_add: ["cap_add"]
       }
     };
   },
@@ -355,6 +478,18 @@ export default {
     },
     removeEnv(index) {
       this.form.env.splice(index, 1);
+    },
+    addSysctl() {
+      this.form.sysctls.push({ name: "", value: "" });
+    },
+    removeSysctl(index) {
+      this.form.sysctls.splice(index, 1);
+    },
+    addCap_add() {
+      this.form.cap_add.push("");
+    },
+    removeCap_add(index) {
+      this.form.cap_add.splice(index, 1);
     },
     nextStep(n) {
       if (n === this.deploySteps) {
@@ -392,7 +527,9 @@ export default {
         restart_policy: app.restart_policy || "",
         ports: app.ports || [],
         volumes: app.volumes || [],
-        env: app.env || []
+        env: app.env || [],
+        sysctls: app.sysctls || [],
+        cap_add: app.cap_add || []
       };
     }
   },
