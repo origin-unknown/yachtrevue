@@ -23,7 +23,7 @@
         </v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step step="6" :complete="deployStep > 6">
-          Caps
+          Capabilities
         </v-stepper-step>
       </v-stepper-header>
 
@@ -356,7 +356,7 @@
               @click="deployStep += 1"
               :disabled="invalid"
             >
-              Submit
+              Continue
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -364,33 +364,25 @@
         <v-stepper-content step="6">
           <ValidationObserver ref="obs6" v-slot="{ invalid }">
             <form>
-              <v-row v-for="(item, index) in form.cap_add" :key="index">
+              <v-row>
                 <v-col>
                   <ValidationProvider
-                    name="Value"
+                    name="Capabilities"
                     rules=""
                     v-slot="{ errors, valid }"
                   >
-                    <v-text-field
-                      label="Value"
-                      v-model="form.cap_add[index]"
+                    <v-combobox
                       :error-messages="errors"
                       :success="valid"
-                      required
-                    ></v-text-field>
+                      v-model="form.cap_add"
+                      :items="optional_caps"
+                      label="Capabilities"
+                      multiple
+                      hide-selected
+                      clearable
+                      small-chips
+                    ></v-combobox>
                   </ValidationProvider>
-                </v-col>
-                <v-col class="d-flex justify-end" cols="1">
-                  <v-btn icon class="align-self-center" @click="removeCap_add(index)">
-                    <v-icon>mdi-minus</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" class="d-flex justify-end">
-                  <v-btn icon class="align-self-center" @click="addCap_add">
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
                 </v-col>
               </v-row>
             </form>
@@ -406,7 +398,6 @@
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
-
       </v-stepper-items>
     </v-stepper>
   </div>
@@ -425,6 +416,31 @@ export default {
     return {
       deployStep: 1,
       deploySteps: 6,
+      optional_caps: [
+        "SYS_MODULE",
+        "SYS_RAWIO",
+        "SYS_PACCT",
+        "SYS_ADMIN",
+        "SYS_NICE",
+        "SYS_RESOURCE",
+        "SYS_TIME",
+        "SYS_TTY_CONFIG",
+        "AUDIT_CONTROL",
+        "MAC_ADMIN",
+        "MAC_OVERRIDE",
+        "NET_ADMIN",
+        "SYSLOG",
+        "DAC_READ_SEARCH",
+        "LINUX_IMMUTABLE",
+        "NET_BROADCAST",
+        "IPC_LOCK",
+        "IPC_OWNER",
+        "SYS_PTRACE",
+        "SYS_BOOT",
+        "LEASE",
+        "WAKE_ALARM",
+        "BLOCK_SUSPEND"
+      ],
 
       form: {
         title: "My Container",
@@ -456,7 +472,7 @@ export default {
             value: "value"
           }
         ],
-        cap_add: ["cap_add"]
+        cap_add: []
       }
     };
   },
@@ -485,14 +501,9 @@ export default {
     removeSysctl(index) {
       this.form.sysctls.splice(index, 1);
     },
-    addCap_add() {
-      this.form.cap_add.push("");
-    },
-    removeCap_add(index) {
-      this.form.cap_add.splice(index, 1);
-    },
     nextStep(n) {
       if (n === this.deploySteps) {
+        console.log(this.form.cap_add);
         // this.deployStep = 1;
         this.submitFormData();
       } else {
