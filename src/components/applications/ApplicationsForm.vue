@@ -29,11 +29,12 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <ValidationObserver ref="obs1" v-slot="{ invalid }">
+          <ValidationObserver ref="obs1" v-slot="{ invalid, validated }">
             <form>
               <ValidationProvider
                 name="Title"
                 rules="required"
+                immediate
                 v-slot="{ errors, valid }"
               >
                 <v-text-field
@@ -48,6 +49,7 @@
               <ValidationProvider
                 name="Image"
                 rules="required"
+                immediate
                 v-slot="{ errors, valid }"
               >
                 <v-text-field
@@ -62,6 +64,7 @@
               <ValidationProvider
                 name="Restart Policy"
                 rules="required"
+                immediate
                 v-slot="{ errors, valid }"
               >
                 <v-select
@@ -77,7 +80,7 @@
             <v-btn
               color="primary"
               @click="deployStep += 1"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Continue
             </v-btn>
@@ -85,13 +88,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <ValidationObserver ref="obs2" v-slot="{ invalid }">
+          <ValidationObserver ref="obs2" v-slot="{ invalid, validated }">
             <form>
               <v-row v-for="(item, index) in form.ports" :key="index">
                 <v-col>
                   <ValidationProvider
                     name="Container"
                     rules=""
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -110,6 +114,7 @@
                   <ValidationProvider
                     name="Host"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -129,6 +134,7 @@
                   <ValidationProvider
                     name="Protocol"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-select
@@ -165,7 +171,7 @@
             <v-btn
               color="primary"
               @click="deployStep += 1"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Continue
             </v-btn>
@@ -173,13 +179,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <ValidationObserver ref="obs3" v-slot="{ invalid }">
+          <ValidationObserver ref="obs3" v-slot="{ invalid, validated }">
             <form>
               <v-row v-for="(item, index) in form.volumes" :key="index">
                 <v-col>
                   <ValidationProvider
                     name="Container"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -196,6 +203,7 @@
                   <ValidationProvider
                     name="Host"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -232,7 +240,7 @@
             <v-btn
               color="primary"
               @click="deployStep += 1"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Continue
             </v-btn>
@@ -240,13 +248,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="4">
-          <ValidationObserver ref="obs4" v-slot="{ invalid }">
+          <ValidationObserver ref="obs4" v-slot="{ invalid, validated }">
             <form>
               <v-row v-for="(item, index) in form.env" :key="index">
                 <v-col>
                   <ValidationProvider
                     name="Label"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -262,6 +271,7 @@
                   <ValidationProvider
                     name="Host"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -293,7 +303,7 @@
             <v-btn
               color="primary"
               @click="deployStep += 1"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Continue
             </v-btn>
@@ -301,13 +311,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="5">
-          <ValidationObserver ref="obs5" v-slot="{ invalid }">
+          <ValidationObserver ref="obs5" v-slot="{ invalid, validated }">
             <form>
               <v-row v-for="(item, index) in form.sysctls" :key="index">
                 <v-col>
                   <ValidationProvider
                     name="Name"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -323,6 +334,7 @@
                   <ValidationProvider
                     name="Value"
                     rules="required"
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
@@ -354,7 +366,7 @@
             <v-btn
               color="primary"
               @click="deployStep += 1"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Continue
             </v-btn>
@@ -362,13 +374,14 @@
         </v-stepper-content>
 
         <v-stepper-content step="6">
-          <ValidationObserver ref="obs6" v-slot="{ invalid }">
+          <ValidationObserver ref="obs6" v-slot="{ invalid, validated }">
             <form>
               <v-row>
                 <v-col>
                   <ValidationProvider
                     name="Capabilities"
                     rules=""
+                    immediate
                     v-slot="{ errors, valid }"
                   >
                     <v-combobox
@@ -392,7 +405,7 @@
             <v-btn
               color="primary"
               @click="nextStep(6)"
-              :disabled="invalid"
+              :disabled="invalid || !validated"
             >
               Submit
             </v-btn>
@@ -443,34 +456,34 @@ export default {
       ],
 
       form: {
-        title: "My Container",
-        image: "image:my-image",
+        title: "", // "My Container",
+        image: "", // "image:my-image",
         restart_policy: "unless-stopped",
         ports: [
-          {
-            cport: "80",
-            hport: "80",
-            proto: "tcp"
-          }
+          // {
+          //   cport: "80",
+          //   hport: "80",
+          //   proto: "tcp"
+          // }
         ],
         volumes: [
-          {
-            container: "/share",
-            bind: "/yacht/image/share"
-          }
+          // {
+          //   container: "/share",
+          //   bind: "/yacht/image/share"
+          // }
         ],
         env: [
-          {
-            label: "JAVA_OPTS",
-            default: "-IDK WHAT THE HELL",
-            name: "" // unused, fixes error
-          }
+          // {
+          //   label: "JAVA_OPTS",
+          //   default: "-IDK WHAT THE HELL",
+          //   name: "" // unused, fixes error
+          // }
         ],
         sysctls: [
-          {
-            name: "name",
-            value: "value"
-          }
+          // {
+          //   name: "name",
+          //   value: "value"
+          // }
         ],
         cap_add: []
       }
