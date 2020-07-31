@@ -419,6 +419,7 @@
 <script>
 import axios from "axios";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -489,7 +490,15 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters({
+      getAppById: "apps/getAppById"
+    }),
+  },
   methods: {
+    ...mapActions({
+      readApp: "apps/readApp"
+    }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
     },
@@ -533,28 +542,23 @@ export default {
         this.deployStep = 1;
       });
     },
-    async readApp() {
-      const appId = this.$route.params.appId;
-      const url = `/api/apps/${appId}`;
-      const response = await axios.get(url);
-      if (!response.data.data) {
-        return undefined;
-      }
-      return response.data.data;
-    },
     async populateForm() {
-      const app = await this.readApp();
-      if (!app) return;
-      this.form = {
-        title: app.title || "",
-        image: app.image || "",
-        restart_policy: app.restart_policy || "",
-        ports: app.ports || [],
-        volumes: app.volumes || [],
-        env: app.env || [],
-        sysctls: app.sysctls || [],
-        cap_add: app.cap_add || []
-      };
+      const appId = this.$route.params.appId;
+      try {
+        const app = await this.readApp(appId);
+        this.form = {
+          title: app.title || "",
+          image: app.image || "",
+          restart_policy: app.restart_policy || "",
+          ports: app.ports || [],
+          volumes: app.volumes || [],
+          env: app.env || [],
+          sysctls: app.sysctls || [],
+          cap_add: app.cap_add || []
+        };
+      } catch(error) {
+        console.error(error, error.response);
+      }
     }
   },
   async created() {

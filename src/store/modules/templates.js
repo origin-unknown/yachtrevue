@@ -29,18 +29,42 @@ const mutations = {
 };
 
 const actions = {
-  readTemplates({ commit }) {
+  async readTemplates({ commit }) {
+    // const url = "/api/templates/";
+    // axios.get(url).then(response => {
+    //   const templates = response.data.data;
+    //   commit("setTemplates", templates);
+    // });
     const url = "/api/templates/";
-    axios.get(url).then(response => {
-      const templates = response.data.data;
-      commit("setTemplates", templates);
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then(response => {
+          const templates = response.data.data;
+          commit("setTemplates", templates);
+          resolve(templates);
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   },
-  readTemplate({ commit }, id) {
+  async readTemplate({ commit }, id) {
+    // const url = `/api/templates/${id}`;
+    // axios.get(url).then(response => {
+    //   const template = response.data.data;
+    //   commit("setTemplate", template);
+    // });
     const url = `/api/templates/${id}`;
-    axios.get(url).then(response => {
-      const template = response.data.data;
-      commit("setTemplate", template);
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then(response => {
+          const template = response.data.data;
+          commit("setTemplate", template);
+          resolve(template);
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   },
   writeTemplate({ commit }, payload) {

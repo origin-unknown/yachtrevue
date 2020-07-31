@@ -142,8 +142,17 @@ export default {
   computed: {
     ...mapState("templates", ["templates"])
   },
-  mounted() {
+  async mounted() {
     this.readTemplates();
+    // this.readTemplates().then(resp => {
+    //   console.log(resp);
+    // });
+    // try {
+    //   let templates = await this.readTemplates();
+    //   console.log(templates);
+    // } catch(error) {
+    //   console.log(error);
+    // }
   }
 };
 </script>

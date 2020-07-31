@@ -103,10 +103,11 @@ export default {
       // return item.title.includes(this.search);
     }
   },
-  created() {
+  async created() {
     const templateId = this.$route.params.templateId;
-    this.readTemplate(templateId);
-    console.log(this.getTemplateById(templateId));
+    let template = await this.readTemplate(templateId);
+    console.log(template);
+    // console.log(this.getTemplateById(templateId));
   }
 };
 </script>

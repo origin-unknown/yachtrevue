@@ -1,5 +1,5 @@
 module.exports = {
-  outputDir: "../flask_yacht/yacht/dist",
+  // outputDir: "../flask_yacht/yacht/dist",
   indexPath: "templates/index.html",
   assetsDir: "static",
   transpileDependencies: ["vuetify"],
