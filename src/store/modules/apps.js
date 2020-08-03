@@ -17,11 +17,6 @@ const mutations = {
 
 const actions = {
   readApp({ commit }, id) {
-    // const url = `/api/apps/${id}`;
-    // axios.get(url).then(response => {
-    //   const app = response.data.data;
-    //   commit("setApp", app);
-    // });
     const url = `/api/apps/${id}`;
     return new Promise((resolve, reject) => {
       axios.get(url)

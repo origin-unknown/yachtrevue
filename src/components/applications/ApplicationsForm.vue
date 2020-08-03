@@ -500,7 +500,7 @@ export default {
       readApp: "apps/readApp"
     }),
     addPort() {
-      this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
+      this.form.ports.push({ cport: "", hport: "", proto: "tcp" });
     },
     removePort(index) {
       this.form.ports.splice(index, 1);
@@ -534,6 +534,11 @@ export default {
     },
     submitFormData() {
       const payload = { ...this.form };
+      payload.ports.map(port => {
+        if (port.cport === "") { port.cport = null; }
+        return port;
+      });
+
       console.log("submit", payload);
       const appId = this.$route.params.appId;
       const url = `/api/apps/${appId}/deploy`;
